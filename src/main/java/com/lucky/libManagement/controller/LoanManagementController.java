@@ -115,7 +115,8 @@ public class LoanManagementController {
     @PostMapping("/create")
     public ResponseEntity<String> createLoan(@RequestBody CreateLoanRequest request, @RequestParam(required = false) String privateKey) {
         if (validatePrivateKey(privateKey, "user")) {
-            Optional<User> userOptional = userService.getUserById(request.getUserId());
+            String email = getEmailFromToken(privateKey);
+            Optional<User> userOptional = userService.getUserByEmail(email);
             Optional<Book> bookOptional = bookService.getBookById(request.getBookId());
 
             if (userOptional.isEmpty() || bookOptional.isEmpty()) {
@@ -124,11 +125,6 @@ public class LoanManagementController {
 
             User user = userOptional.get();
             Book book = bookOptional.get();
-
-//            // Check if the book is available for borrowing
-//            if (book.getAvailableQuantity() < 1) {
-//                return ResponseEntity.badRequest().body("Book is currently unavailable for borrowing.");
-//            }
 
             List<Borrowing> borrowings = borrowingService.getBorrowingsByUserAndBook(user, book);
             if (borrowings.isEmpty()) {
@@ -145,10 +141,6 @@ public class LoanManagementController {
             loan.setStatus("Borrowed");
 
             loan = loanManagementService.createLoan(user, book, dueDate);
-
-//            // Update the book's available quantity
-//            book.setAvailableQuantity(book.getAvailableQuantity() - 1);
-//            bookService.updateBook(book);
 
             return ResponseEntity.ok("Loan created successfully.");
         } else {
@@ -239,4 +231,14 @@ public class LoanManagementController {
         return isOk;
    }
 
+    private String getEmailFromToken(String privateKey) {
+        CurrentUserSession currentUserSession = currentUserSessionService.findByPrivateKey(privateKey);
+        if (currentUserSession != null) {
+            return currentUserSession.getEmail();
+        } else {
+            // Handle the case where the token is invalid or expired
+            // You can throw an exception or return null as per your requirement
+            throw new RuntimeException("Invalid or expired token");
+        }
+    }
 }

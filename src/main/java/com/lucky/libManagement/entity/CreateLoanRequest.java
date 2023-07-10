@@ -2,30 +2,15 @@ package com.lucky.libManagement.entity;
 
 public class CreateLoanRequest {
 
-	private Long userId;
     private Long bookId;
 
-	public CreateLoanRequest(Long userId, Long bookId) {
+	public CreateLoanRequest( Long bookId) {
 		super();
-		this.userId = userId;
 		this.bookId = bookId;
-	}
-
-	public CreateLoanRequest(Long userId) {
-		super();
-		this.userId = userId;
 	}
 
 	public CreateLoanRequest() {
 		super();
-	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
 	}
 
 	public Long getBookId() {
@@ -38,8 +23,6 @@ public class CreateLoanRequest {
 
 	@Override
 	public String toString() {
-		return "CreateLoanRequest [userId=" + userId + ", bookId=" + bookId + "]";
+		return "CreateLoanRequest [bookId=" + bookId + "]";
 	}
-
-
 }

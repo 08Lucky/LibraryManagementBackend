@@ -76,12 +76,12 @@ public class BorrowingController {
 
     @PostMapping("/borrow")
     public ResponseEntity<String> borrowBook(
-            @RequestParam Long userId,
             @RequestParam Long bookId,
             @RequestParam(required = false) String privateKey) {
 
         if (validatePrivateKey(privateKey, "user")) {
-            Optional<User> userOptional = userService.getUserById(userId);
+            String email = getEmailFromToken(privateKey);
+            Optional<User> userOptional = userService.getUserByEmail(email);
             Optional<Book> bookOptional = bookService.getBookById(bookId);
 
             // Calculate borrowDate as the current date
@@ -175,4 +175,16 @@ public class BorrowingController {
         }
         return isOk;
    }
+    
+    private String getEmailFromToken(String privateKey) {
+        CurrentUserSession currentUserSession = currentUserSessionService.findByPrivateKey(privateKey);
+        if (currentUserSession != null) {
+            return currentUserSession.getEmail();
+        } else {
+            // Handle the case where the token is invalid or expired
+            // You can throw an exception or return null as per your requirement
+            throw new RuntimeException("Invalid or expired token");
+        }
+    }
+
 }
