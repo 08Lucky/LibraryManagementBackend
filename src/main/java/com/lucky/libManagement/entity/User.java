@@ -13,7 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import com.lucky.libManagement.enummodel.UserStatus;
+//import com.lucky.libManagement.enummodel.UserStatus;
 
 import javax.persistence.JoinColumn;
 
@@ -40,33 +40,6 @@ public class User {
 
     @Column(name = "account_status")
     private String  userStatus;
-    
-//    @Column(name = "username")
-//    private String username;
-    
-//    @Column(name = "roles")
-//	private String roles;
-    
-//	public String getUsername() {
-//		return username;
-//	}
-//
-//	public void setUsername(String username) {
-//		this.username = username;
-//	}
-
-//	public User(Long userId, String firstName, String lastName, String email, String password, String userStatus,
-//			String username) {
-//		super();
-//		this.userId = userId;
-//		this.firstName = firstName;
-//		this.lastName = lastName;
-//		this.email = email;
-//		this.password = password;
-//		this.userStatus = userStatus;
-//		this.username = username;
-//		
-//	}
 
 	public Long getUserId() {
 		return userId;
@@ -116,27 +89,6 @@ public class User {
 		this.userStatus = userStatus;
 	}
 	
-	
-
-//	public String getRoles() {
-//		return roles;
-//	}
-//
-//	public void setRoles(String roles) {
-//		this.roles = roles;
-//	}
-
-//	public User(Long userId, String firstName, String lastName, String email, String password, String  userStatus,
-//			String roles) {
-//		super();
-//		this.userId = userId;
-//		this.firstName = firstName;
-//		this.lastName = lastName;
-//		this.email = email;
-//		this.password = password;
-//		this.userStatus = userStatus;
-//		this.roles = roles;
-//	}
 
 	public User(Long userId, String firstName, String lastName, String email, String password, String  userStatus) {
 		super();

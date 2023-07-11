@@ -10,9 +10,8 @@ import org.springframework.util.unit.DataSize;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 
-
 @EnableWebMvc
-@SpringBootApplication
+@SpringBootApplication //It encapsulates @SpringBootConfiguration, @EnableAutoConfiguration, and @ComponentScan 
 @ComponentScan(basePackages = "com.lucky.libManagement")
 public class LibrarayManagementApplication {
 

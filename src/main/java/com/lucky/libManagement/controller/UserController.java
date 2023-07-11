@@ -109,11 +109,51 @@ public class UserController {
 
     
     @PutMapping("/update")
-    public ResponseEntity<User> updateEmployee( @RequestBody User user, @RequestParam(required = false) String privateKey) {
+    public ResponseEntity<User> updateEmployee(@RequestBody User user, @RequestParam(required = false) String privateKey) {
         if (validatePrivateKey(privateKey, "user")) {
-        	User updatedUser = userService.updateUser(user);
-            if (updatedUser != null) {
-                return ResponseEntity.ok(updatedUser);
+            String email = getEmailFromToken(privateKey);
+            Optional<User> userOptional = userService.getUserByEmail(email);
+
+            if (userOptional.isPresent()) {
+                User existingUser = userOptional.get();
+                
+                // Update the necessary fields of the user entity
+                existingUser.setFirstName(user.getFirstName());
+                existingUser.setLastName(user.getLastName());
+                existingUser.setEmail(user.getEmail());
+                existingUser.setPassword(user.getPassword());
+                existingUser.setUserStatus(user.getUserStatus());
+                
+                User updatedUser = userService.updateUser(existingUser);
+                
+                if (updatedUser != null) {
+                    return ResponseEntity.ok(updatedUser);
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+  
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser(@RequestParam(required = false) String privateKey) {
+        if (validatePrivateKey(privateKey, "user")) {
+            String email = getEmailFromToken(privateKey);
+            Optional<User> userOptional = userService.getUserByEmail(email);
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                boolean deleted = userService.deleteUser(user.getUserId());
+
+                if (deleted) {
+                    return ResponseEntity.noContent().build();
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
             } else {
                 return ResponseEntity.notFound().build();
             }
@@ -122,20 +162,6 @@ public class UserController {
         }
     }
 
-    
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long userId, @RequestParam(required = false) String privateKey) {
-        if (validatePrivateKey( privateKey, "librarian")) {
-            boolean deleted = userService.deleteUser(userId);
-            if (deleted) {
-                return ResponseEntity.noContent().build();
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    }
     
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestParam(required = false) String privateKey) {
@@ -176,6 +202,17 @@ public class UserController {
         }
         return isOk;
    }
+    
+    private String getEmailFromToken(String privateKey) {
+        CurrentUserSession currentUserSession = currentUserSessionService.findByPrivateKey(privateKey);
+        if (currentUserSession != null) {
+            return currentUserSession.getEmail();
+        } else {
+            // Handle the case where the token is invalid or expired
+            // You can throw an exception or return null as per your requirement
+            throw new RuntimeException("Invalid or expired token");
+        }
+    }
 }
 
 

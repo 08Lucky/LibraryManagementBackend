@@ -20,8 +20,8 @@ public class Borrowing {
     @Column(name = "borrowing_id")
     private Long borrowingId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne  // many instances of borrowing can be created for one user
+    @JoinColumn(name = "user_id") //indicates that the foreign key column in the table Borrowing
     private User user;
 
     @ManyToOne

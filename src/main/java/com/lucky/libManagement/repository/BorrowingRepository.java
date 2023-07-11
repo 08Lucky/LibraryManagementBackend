@@ -11,7 +11,8 @@ import com.lucky.libManagement.entity.Borrowing;
 import com.lucky.libManagement.entity.User;
 
 @Repository
-public interface BorrowingRepository extends JpaRepository<Borrowing, Long> {
+public interface BorrowingRepository extends JpaRepository<Borrowing, Long> { 
+	//JpaRepository extends the CrudRepository interface and provides additional methods for performing common database operations 
 	List<Borrowing> findByUser(Optional<User> user);
     List<Borrowing> findByBook(Optional<Book> book);
     List<Borrowing> findByStatus(String status);
